@@ -23,6 +23,5 @@ namespace Github.Api.Models
 			}
 			return new Tuple<string, string>(match.Groups[1].Value, match.Groups[2].Value);
 		}
-
 	}
 }

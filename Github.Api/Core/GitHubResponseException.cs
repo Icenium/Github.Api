@@ -5,6 +5,8 @@ namespace Github.Api.Core
 	[Serializable]
 	public class GitHubResponseException : Exception
 	{
+		public dynamic Response { get; set; }
+
 		public GitHubResponseException()
 		{
 		}
@@ -22,7 +24,5 @@ namespace Github.Api.Core
 			System.Runtime.Serialization.StreamingContext context) : base(info, context)
 		{
 		}
-
-		public dynamic Response { get; set; }
 	}
 }

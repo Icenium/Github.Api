@@ -2,13 +2,13 @@
 {
 	public class Plan
 	{
-		public virtual string Name { get; set; }
-
 		public virtual int Collaborators { get; set; }
 
-		public virtual long Space { get; set; }
+		public virtual string Name { get; set; }
 
 		public virtual int PrivateRepos { get; set; }
+
+		public virtual long Space { get; set; }
 
 		public override bool Equals(object obj)
 		{
@@ -16,8 +16,8 @@
 			{
 				var compareTo = (Plan)obj;
 
-				if (compareTo.Equals(Name) && compareTo.Collaborators.Equals(Collaborators) &&
-					compareTo.Space.Equals(Space) && compareTo.PrivateRepos.Equals(PrivateRepos))
+				if (compareTo.Equals(this.Name) && compareTo.Collaborators.Equals(this.Collaborators) &&
+					compareTo.Space.Equals(this.Space) && compareTo.PrivateRepos.Equals(this.PrivateRepos))
 				{
 					return true;
 				}
@@ -30,12 +30,12 @@
 
 		public override int GetHashCode()
 		{
-			return Name.GetHashCode() + Collaborators.GetHashCode();
+			return this.Name.GetHashCode() + this.Collaborators.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return Name;
+			return this.Name;
 		}
 	}
 }

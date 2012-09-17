@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication\AuthenticatingHandler.cs" />
+    <Compile Include="Core\Authorization\AuthorizationApi.cs" />
     <Compile Include="Core\GitHubApi.cs" />
     <Compile Include="Core\GitHubError.cs" />
     <Compile Include="Core\Repositories\CreateRepositoryInfo.cs" />
@@ -64,12 +65,13 @@
     <Compile Include="Core\GitHubResponseException.cs" />
     <Compile Include="Core\Users\UserApi.cs" />
     <Compile Include="Core\Users\UserApi.Followers.cs" />
-    <Compile Include="Extensions\HttpClientExtensions.cs" />
     <Compile Include="Framework\GitHubApiSettings.cs" />
     <Compile Include="Framework\IGitHubApiSettings.cs" />
     <Compile Include="GitHub.cs" />
     <Compile Include="GitHubAuthorizationException.cs" />
+    <Compile Include="Models\Authorization.cs" />
     <Compile Include="Models\Following.cs" />
+    <Compile Include="Models\GitHubApplication.cs" />
     <Compile Include="Models\GitHubSshKey.cs" />
     <Compile Include="Models\Plan.cs" />
     <Compile Include="Models\Repository.cs" />

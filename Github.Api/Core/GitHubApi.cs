@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -14,12 +15,7 @@ namespace Github.Api.Core
 	public abstract class GitHubApi
 	{
 		protected static readonly MediaTypeFormatterCollection mediaTypeFormatterCollection = new MediaTypeFormatterCollection();
-		protected Action<HttpResponseMessage> assertQuerySuccess = (httpResponseMessage) =>
-			{
-				EnsureAuthorized(httpResponseMessage.StatusCode);
-				CheckRateLimit(httpResponseMessage.Headers);
-				httpResponseMessage.EnsureSuccessStatusCode();
-			};
+
 		protected HttpClient httpClient;
 
 		protected GitHubApi(HttpClient httpClient)
@@ -27,13 +23,31 @@ namespace Github.Api.Core
 			this.httpClient = httpClient;
 		}
 
-
-		protected static void EnsureAuthorized(HttpStatusCode statusCode)
+		public Task<T> CreateAsync<T>(string url, StringContent queryContent, Func<HttpResponseMessage, Task<T>> parseErrors)
 		{
-			if (statusCode == System.Net.HttpStatusCode.Unauthorized)
+			return this.httpClient.PostAsync(url, queryContent).ContinueWith(t =>
 			{
-				throw new GitHubAuthorizationException("Access to this method requires an authenticated user");
-			}
+				this.EnsureAuthorizationAndRateLimit(t.Result);
+
+				if (t.Result.StatusCode != System.Net.HttpStatusCode.Created)
+				{
+					return parseErrors(t.Result);
+				}
+
+				return t.Result.Content.ReadAsAsync<T>(mediaTypeFormatterCollection);
+			}).Unwrap();
+		}
+
+		public Task<T> GetAsync<T>(string url)
+		{
+			return this.httpClient.GetAsync(url).ContinueWith(t =>
+			{
+				this.EnsureAuthorizationAndRateLimit(t.Result);
+				
+				t.Result.EnsureSuccessStatusCode();
+
+				return t.Result.Content.ReadAsAsync<T>(mediaTypeFormatterCollection);
+			}).Unwrap();
 		}
 
 		protected static void CheckRateLimit(HttpResponseHeaders headers)
@@ -49,7 +63,35 @@ namespace Github.Api.Core
 			Debug.WriteLine(string.Format("Current remaining rate limit: {0}", rateLimitRemaining));
 
 			if (rateLimitRemaining <= 0)
+			{
 				throw new GitHubResponseException(string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
+			}
+		}
+
+		protected static void EnsureAuthorized(HttpStatusCode statusCode)
+		{
+			if (statusCode == System.Net.HttpStatusCode.Unauthorized)
+			{
+				throw new GitHubAuthorizationException("Access to this method requires an authenticated user");
+			}
+		}
+
+		protected void EnsureAuthorizationAndRateLimit(HttpResponseMessage httpResponseMessage)
+		{
+			EnsureAuthorized(httpResponseMessage.StatusCode);
+			CheckRateLimit(httpResponseMessage.Headers);
+		}
+
+		protected void EnsureResponseSuccess(HttpResponseMessage httpResponseMessage)
+		{
+			this.EnsureAuthorizationAndRateLimit(httpResponseMessage);
+			httpResponseMessage.EnsureSuccessStatusCode();
+		}
+
+		protected StringContent GetStringContent(object objectToSerialize)
+		{
+			return new StringContent(JValue.FromObject(objectToSerialize).ToString(),
+				Encoding.UTF8, "application/json");
 		}
 
 		protected Task<T> ReadErrorMessage<T>(HttpResponseMessage response)

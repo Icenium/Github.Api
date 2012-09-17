@@ -12,6 +12,42 @@ namespace Github.Api
 	{
 		private readonly HttpClient httpClient;
 
+		public AuthorizationApi Authorization
+		{
+			get
+			{
+				return new AuthorizationApi(this.httpClient);
+			}
+		}
+
+		public Uri BaseAddress
+		{
+			get
+			{
+				return this.httpClient.BaseAddress;
+			}
+			set
+			{
+				this.httpClient.BaseAddress = value;
+			}
+		}
+
+		public RepositoryApi Repositories
+		{
+			get
+			{
+				return new RepositoryApi(this.httpClient);
+			}
+		}
+
+		public UserApi Users
+		{
+			get
+			{
+				return new UserApi(this.httpClient);
+			}
+		}
+
 		public GitHub(IGitHubApiSettings gitHubApiSettings)
 		{
 			if (gitHubApiSettings == null)
@@ -33,38 +69,9 @@ namespace Github.Api
 			}
 			else
 			{
-
 			}
 
 			this.httpClient.BaseAddress = new Uri(gitHubApiSettings.BaseUrl);
-		}
-
-		public Uri BaseAddress
-		{
-			get
-			{
-				return this.httpClient.BaseAddress;
-			}
-			set
-			{
-				this.httpClient.BaseAddress = value;
-			}
-		}
-
-		public UserApi Users
-		{
-			get
-			{
-				return new UserApi(httpClient);
-			}
-		}
-
-		public RepositoryApi Repositories
-		{
-			get
-			{
-				return new RepositoryApi(httpClient);
-			}
 		}
 	}
 }

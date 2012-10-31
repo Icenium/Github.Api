@@ -9,6 +9,9 @@ namespace Github.Api.Core
 {
 	public class AuthorizationApi : GitHubApi
 	{
+		public static readonly IEnumerable<string> FullPermissionScopes =
+			new[] { "user", "public_repo", "repo", "repo:status", "delete_repo", "gist" };
+
 		public AuthorizationApi(HttpClient httpClient) : base(httpClient)
 		{
 		}
@@ -19,9 +22,21 @@ namespace Github.Api.Core
 			return this.CreateAuthorizationAsyncCore(queryContent);
 		}
 
+		public Task<Authorization> CreateAuthorizationAsync(IEnumerable<string> scopes, string note)
+		{
+			var queryContent = this.GetStringContent(new { scopes = scopes, note = note });
+			return this.CreateAuthorizationAsyncCore(queryContent);
+		}
+
 		public Task<Authorization> CreateAuthorizationAsync(IEnumerable<string> scopes)
 		{
 			var queryContent = this.GetStringContent(new { scopes = scopes });
+			return this.CreateAuthorizationAsyncCore(queryContent);
+		}
+
+		public Task<Authorization> CreateAuthorizationAsync()
+		{
+			var queryContent = this.GetStringContent(new { scopes = FullPermissionScopes });
 			return this.CreateAuthorizationAsyncCore(queryContent);
 		}
 

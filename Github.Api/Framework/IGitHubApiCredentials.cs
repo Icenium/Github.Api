@@ -1,9 +1,7 @@
 namespace Github.Api.Framework
 {
-	public interface IGitHubApiSettings
+	public interface IGitHubApiCredentials
 	{
-		string BaseUrl { get; set; }
-
 		string Password { get; set; }
 
 		string Token { get; set; }

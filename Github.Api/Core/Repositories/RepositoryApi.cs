@@ -58,12 +58,12 @@ namespace Github.Api.Core
 			});
 		}
 
-		public Task<IList<Repository>> GetOrganizationRepositoriesAsync(string organization)
+		public Task<IEnumerable<Repository>> GetOrganizationRepositoriesAsync(string organization)
 		{
 			return this.GetRepositoriesCore(string.Format("/orgs/{0}/repos", organization));
 		}
 
-		public Task<IList<Repository>> GetOrganizationRepositoriesAsync(string organization, RepositoryQueryType type)
+		public Task<IEnumerable<Repository>> GetOrganizationRepositoriesAsync(string organization, RepositoryQueryType type)
 		{
 			if (type == RepositoryQueryType.Owner)
 			{
@@ -73,29 +73,29 @@ namespace Github.Api.Core
 			return this.GetRepositoriesCore(string.Format("/orgs/{0}/repos?type={1}", organization, queryTypes[type]));
 		}
 
-		public Task<IList<Repository>> GetRepositoriesAsync()
+		public Task<IEnumerable<Repository>> GetRepositoriesAsync()
 		{
 			return this.GetRepositoriesCore("/user/repos");
 		}
 
-		public Task<IList<Repository>> GetRepositoriesAsync(RepositoryQueryType type)
+		public Task<IEnumerable<Repository>> GetRepositoriesAsync(RepositoryQueryType type)
 		{
 			return this.GetRepositoriesCore(string.Format("/user/repos?type={0}", queryTypes[type]));
 		}
 
-		public Task<IList<Repository>> GetRepositoriesAsync(RepositoryQueryType type,
+		public Task<IEnumerable<Repository>> GetRepositoriesAsync(RepositoryQueryType type,
 			RepositoryQuerySort sort, RepositoryQueryDirection direction)
 		{
 			return this.GetRepositoriesCore(string.Format("/user/repos?type={0}&sort={1}&direction={2}",
 				queryTypes[type], querySorts[sort], queryDirections[direction]));
 		}
 
-		public Task<IList<Repository>> GetUserRepositoriesAsync(string username)
+		public Task<IEnumerable<Repository>> GetUserRepositoriesAsync(string username)
 		{
 			return this.GetRepositoriesCore(string.Format("/users/{0}/repos", username));
 		}
 
-		public Task<IList<Repository>> GetUserRepositoriesAsync(string username, RepositoryQueryType type)
+		public Task<IEnumerable<Repository>> GetUserRepositoriesAsync(string username, RepositoryQueryType type)
 		{
 			if (type == RepositoryQueryType.Private && type == RepositoryQueryType.Public)
 			{
@@ -105,7 +105,7 @@ namespace Github.Api.Core
 			return this.GetRepositoriesCore(string.Format("/users/{0}/repos?type={1}", username, queryTypes[type]));
 		}
 
-		public Task<IList<Repository>> GetUserRepositoriesAsync(string username, RepositoryQueryType type,
+		public Task<IEnumerable<Repository>> GetUserRepositoriesAsync(string username, RepositoryQueryType type,
 			RepositoryQuerySort sort, RepositoryQueryDirection direction)
 		{
 			return this.GetRepositoriesCore(string.Format("/users/{0}/repos?type={1}&sort={2}&direction={3}",
@@ -117,9 +117,9 @@ namespace Github.Api.Core
 			return this.CreateAsync("/user/repos", queryContent, this.ReadErrorMessage<Repository>);
 		}
 
-		private Task<IList<Repository>> GetRepositoriesCore(string url)
+		private Task<IEnumerable<Repository>> GetRepositoriesCore(string url)
 		{
-			return this.GetAsync<IList<Repository>>(url);
+			return this.GetAsync<IEnumerable<Repository>>(url);
 		}
 	}
 }

@@ -8,6 +8,8 @@ using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Github.Api.Extensions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Github.Api.Core
@@ -38,14 +40,27 @@ namespace Github.Api.Core
 			}).Unwrap();
 		}
 
+		public Task<dynamic> GetDynamicAsync(string url)
+		{
+			return this.httpClient.GetAsync(url).ContinueWith(t =>
+			{
+				this.EnsureAuthorizationAndRateLimit(t.Result);
+				t.Result.EnsureSuccessStatusCode();
+
+				return t.Result.Content.ReadAsStringAsync().ContinueWith(task =>
+				{
+					return (dynamic)JValue.Parse(task.Result);
+				});
+			}).Unwrap();
+		}
+
 		public Task<T> GetAsync<T>(string url)
 		{
 			return this.httpClient.GetAsync(url).ContinueWith(t =>
 			{
 				this.EnsureAuthorizationAndRateLimit(t.Result);
-				
-				t.Result.EnsureSuccessStatusCode();
 
+				t.Result.EnsureResponseSuccessStatusCode();
 				return t.Result.Content.ReadAsAsync<T>(mediaTypeFormatterCollection);
 			}).Unwrap();
 		}
@@ -64,7 +79,7 @@ namespace Github.Api.Core
 
 			if (rateLimitRemaining <= 0)
 			{
-				throw new GitHubResponseException(string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
+				throw new HttpRequestException(string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
 			}
 		}
 
@@ -72,7 +87,7 @@ namespace Github.Api.Core
 		{
 			if (statusCode == System.Net.HttpStatusCode.Unauthorized)
 			{
-				throw new GitHubAuthorizationException("Access to this method requires an authenticated user");
+				throw new HttpRequestException("Access to this method requires an authenticated user");
 			}
 		}
 
@@ -100,7 +115,7 @@ namespace Github.Api.Core
 			{
 				var result = (dynamic)JValue.Parse(task.Result);
 				var taskCompletionSource = new TaskCompletionSource<T>();
-				taskCompletionSource.SetException(new GitHubResponseException(result.message.Value));
+				taskCompletionSource.SetException(new HttpRequestException(result.message.Value));
 				return taskCompletionSource.Task;
 			}).Unwrap();
 		}
@@ -110,10 +125,10 @@ namespace Github.Api.Core
 			return response.Content.ReadAsStringAsync().ContinueWith(task =>
 			{
 				var result = (dynamic)JValue.Parse(task.Result);
-				var exceptions = new List<Exception>();
+				var exceptions = new List<HttpRequestException>();
 				foreach (var error in result.errors)
 				{
-					exceptions.Add(new GitHubResponseException(error.message.Value));
+					exceptions.Add(new HttpRequestException(error.message.Value));
 				}
 				var taskCompletionSource = new TaskCompletionSource<T>();
 				taskCompletionSource.SetException(exceptions);

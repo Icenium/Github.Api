@@ -62,13 +62,13 @@
     <Compile Include="Core\Repositories\RepositoryApi.cs" />
     <Compile Include="Core\Repositories\RepositoryQueryType.cs" />
     <Compile Include="Core\Users\UserApi.Keys.cs" />
-    <Compile Include="Core\GitHubResponseException.cs" />
     <Compile Include="Core\Users\UserApi.cs" />
     <Compile Include="Core\Users\UserApi.Followers.cs" />
-    <Compile Include="Framework\GitHubApiSettings.cs" />
-    <Compile Include="Framework\IGitHubApiSettings.cs" />
+    <Compile Include="Exceptions\GitHubRequestException.cs" />
+    <Compile Include="Extensions\HttpResponseMessageExtensions.cs" />
+    <Compile Include="Framework\GitHubApiCredentials.cs" />
+    <Compile Include="Framework\IGitHubApiCredentials.cs" />
     <Compile Include="GitHub.cs" />
-    <Compile Include="GitHubAuthorizationException.cs" />
     <Compile Include="Models\Authorization.cs" />
     <Compile Include="Models\Following.cs" />
     <Compile Include="Models\GitHubApplication.cs" />

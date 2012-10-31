@@ -48,30 +48,35 @@ namespace Github.Api
 			}
 		}
 
-		public GitHub(IGitHubApiSettings gitHubApiSettings)
+		public GitHub()
 		{
-			if (gitHubApiSettings == null)
+			this.httpClient = new HttpClient();
+			this.httpClient.BaseAddress = new Uri("https://api.github.com");
+		}
+
+		public GitHub(IGitHubApiCredentials githubApiCredentials)
+			:this()
+		{
+			if (githubApiCredentials == null)
 			{
 				throw new ArgumentNullException("gitHubApiSettings", "The Github settings provider cannot be null.");
 			}
 
-			if (!string.IsNullOrEmpty(gitHubApiSettings.Token))
+			this.UpdateCrentials(githubApiCredentials);
+		}
+
+		public void UpdateCrentials(IGitHubApiCredentials githubApiCredentials)
+		{
+			if (!string.IsNullOrEmpty(githubApiCredentials.Token))
 			{
-				this.httpClient = new HttpClient();
-				this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", gitHubApiSettings.Token);
+				this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", githubApiCredentials.Token);
 			}
-			else if (!string.IsNullOrEmpty(gitHubApiSettings.Password) && !string.IsNullOrEmpty(gitHubApiSettings.Username))
+			else if (!string.IsNullOrEmpty(githubApiCredentials.Password) && !string.IsNullOrEmpty(githubApiCredentials.Username))
 			{
-				this.httpClient = new HttpClient();
 				string usernamePasswordToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format(CultureInfo.InvariantCulture,
-					"{0}:{1}", new object[] { gitHubApiSettings.Username, gitHubApiSettings.Password })));
+					"{0}:{1}", new object[] { githubApiCredentials.Username, githubApiCredentials.Password })));
 				this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", usernamePasswordToken);
 			}
-			else
-			{
-			}
-
-			this.httpClient.BaseAddress = new Uri(gitHubApiSettings.BaseUrl);
 		}
 	}
 }

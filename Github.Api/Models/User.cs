@@ -3,7 +3,7 @@
 	public class User : UpdateableUser
 	{
 		//public, authentication not required
-		public int Id { get; set; }
+		public string Id { get; set; }
 		public string Login { get; set; }
 		public int FollowingCount { get; set; }
 		public int FollowersCount { get; set; }
@@ -24,7 +24,7 @@
 			{
 				var compareTo = (User)obj;
 
-				return compareTo.Id.Equals(Id) && compareTo.Name.Equals(Name) && compareTo.Email.Equals(Email);
+				return compareTo.Id.Equals(Id) && compareTo.Login.Equals(Login);
 			}
 
 			return base.Equals(obj);

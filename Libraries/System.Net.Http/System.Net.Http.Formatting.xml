@@ -170,7 +170,7 @@
         </member>
         <member name="M:System.Web.Http.Error.InvalidEnumArgument(System.String,System.Int32,System.Type)">
             <summary>
-            Creates an <see cref="T:System.ComponentModel.InvalidEnumArgumentException"/>.
+            Creates an <see cref="T:System.ArgumentException"/> for an invalid enum argument.
             </summary>
             <param name="parameterName">The name of the parameter that caused the current exception.</param>
             <param name="invalidValue">The value of the argument that failed.</param>
@@ -588,6 +588,62 @@
             please use the WebUtility class.
             </summary>
         </member>
+        <member name="T:System.Net.Http.ByteRangeStreamContent">
+            <summary>
+            <see cref="T:System.Net.Http.HttpContent"/> implementation which provides a byte range view over a stream used to generate HTTP
+            206 (Partial Content) byte range responses. The <see cref="T:System.Net.Http.ByteRangeStreamContent"/> supports one or more 
+            byte ranges regardless of whether the ranges are consecutive or not. If there is only one range then a 
+            single partial response body containing a Content-Range header is generated. If there are more than one
+            ranges then a multipart/byteranges response is generated where each body part contains a range indicated
+            by the associated Content-Range header field.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.ByteRangeStreamContent.#ctor(System.IO.Stream,System.Net.Http.Headers.RangeHeaderValue,System.String)">
+            <summary>
+            <see cref="T:System.Net.Http.HttpContent"/> implementation which provides a byte range view over a stream used to generate HTTP
+            206 (Partial Content) byte range responses. If none of the requested ranges overlap with the current extend 
+            of the selected resource represented by the <paramref name="content"/> parameter then an 
+            <see cref="T:System.Net.Http.InvalidByteRangeException"/> is thrown indicating the valid Content-Range of the content. 
+            </summary>
+            <param name="content">The stream over which to generate a byte range view.</param>
+            <param name="range">The range or ranges, typically obtained from the Range HTTP request header field.</param>
+            <param name="mediaType">The media type of the content stream.</param>
+        </member>
+        <member name="M:System.Net.Http.ByteRangeStreamContent.#ctor(System.IO.Stream,System.Net.Http.Headers.RangeHeaderValue,System.String,System.Int32)">
+            <summary>
+            <see cref="T:System.Net.Http.HttpContent"/> implementation which provides a byte range view over a stream used to generate HTTP
+            206 (Partial Content) byte range responses. If none of the requested ranges overlap with the current extend 
+            of the selected resource represented by the <paramref name="content"/> parameter then an 
+            <see cref="T:System.Net.Http.InvalidByteRangeException"/> is thrown indicating the valid Content-Range of the content. 
+            </summary>
+            <param name="content">The stream over which to generate a byte range view.</param>
+            <param name="range">The range or ranges, typically obtained from the Range HTTP request header field.</param>
+            <param name="mediaType">The media type of the content stream.</param>
+            <param name="bufferSize">The buffer size used when copying the content stream.</param>
+        </member>
+        <member name="M:System.Net.Http.ByteRangeStreamContent.#ctor(System.IO.Stream,System.Net.Http.Headers.RangeHeaderValue,System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            <see cref="T:System.Net.Http.HttpContent"/> implementation which provides a byte range view over a stream used to generate HTTP
+            206 (Partial Content) byte range responses. If none of the requested ranges overlap with the current extend 
+            of the selected resource represented by the <paramref name="content"/> parameter then an 
+            <see cref="T:System.Net.Http.InvalidByteRangeException"/> is thrown indicating the valid Content-Range of the content. 
+            </summary>
+            <param name="content">The stream over which to generate a byte range view.</param>
+            <param name="range">The range or ranges, typically obtained from the Range HTTP request header field.</param>
+            <param name="mediaType">The media type of the content stream.</param>
+        </member>
+        <member name="M:System.Net.Http.ByteRangeStreamContent.#ctor(System.IO.Stream,System.Net.Http.Headers.RangeHeaderValue,System.Net.Http.Headers.MediaTypeHeaderValue,System.Int32)">
+            <summary>
+            <see cref="T:System.Net.Http.HttpContent"/> implementation which provides a byte range view over a stream used to generate HTTP
+            206 (Partial Content) byte range responses. If none of the requested ranges overlap with the current extend 
+            of the selected resource represented by the <paramref name="content"/> parameter then an 
+            <see cref="T:System.Net.Http.InvalidByteRangeException"/> is thrown indicating the valid Content-Range of the content. 
+            </summary>
+            <param name="content">The stream over which to generate a byte range view.</param>
+            <param name="range">The range or ranges, typically obtained from the Range HTTP request header field.</param>
+            <param name="mediaType">The media type of the content stream.</param>
+            <param name="bufferSize">The buffer size used when copying the content stream.</param>
+        </member>
         <member name="M:System.Net.Http.CloneableExtensions.Clone``1(``0)">
             <summary>
             Convenience method for cloning objects that implement <see cref="T:System.ICloneable"/> explicitly.
@@ -634,6 +690,52 @@
             <param name="content">The content.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> which will provide the result. If the data can not be read
             as HTML form URL-encoded data then the result is null.</returns>
+        </member>
+        <member name="T:System.Net.Http.Internal.ByteRangeStream">
+            <summary>
+            Stream which only exposes a read-only only range view of an 
+            inner stream.
+            </summary>
+        </member>
+        <member name="T:System.Net.Http.Internal.DelegatingStream">
+            <summary>
+            Stream that delegates to inner stream. 
+            This is taken from System.Net.Http
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.Internal.ByteRangeStream.PrepareStreamForRangeRead(System.Int32)">
+            <summary>
+            Gets the 
+            </summary>
+            <param name="count">The count requested to be read by the caller.</param>
+            <returns>The remaining bytes to read within the range defined for this stream.</returns>
+        </member>
+        <member name="T:System.Net.Http.Internal.MultipartWriteDelegatingStream">
+            <summary>
+            This stream synchronizes async writes on streams written to by <see cref="T:System.Net.Http.MultipartFileStreamProvider"/>.
+            This works around a race condition that happens when using APM to write asynchronously to a 
+            <see cref="T:System.IO.FileStream"/>. The impact of the race condition is that the file may still be in 
+            the process of being closed as control returns to the user causing an <see cref="T:System.IO.IOException"/>
+            to be thrown.
+            </summary>
+        </member>
+        <member name="T:System.Net.Http.Internal.ReadOnlyStreamWithEncodingPreamble">
+            <summary>
+            This implements a read-only, forward-only stream around another readable stream, to ensure
+            that there is an appropriate encoding preamble in the stream.
+            </summary>
+        </member>
+        <member name="T:System.Net.Http.InvalidByteRangeException">
+            <summary>
+            An exception thrown by <see cref="T:System.Net.Http.ByteRangeStreamContent"/> in case none of the requested ranges 
+            overlap with the current extend of the selected resource. The current extend of the resource
+            is indicated in the ContentRange property.
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.InvalidByteRangeException.ContentRange">
+            <summary>
+            The current extend of the resource indicated in terms of a ContentRange header field.
+            </summary>
         </member>
         <member name="T:System.Net.Http.MultipartRelatedStreamProvider">
             <summary>
@@ -699,6 +801,101 @@
             present then pick the first of the children.
             </summary>
         </member>
+        <member name="T:System.Net.Http.ObjectContent`1">
+            <summary>
+            Generic form of <see cref="T:System.Net.Http.ObjectContent"/>.
+            </summary>
+            <typeparam name="T">The type of object this <see cref="T:System.Net.Http.ObjectContent"/> class will contain.</typeparam>
+        </member>
+        <member name="T:System.Net.Http.ObjectContent">
+            <summary>
+            Contains a value as well as an associated <see cref="T:System.Net.Http.Formatting.MediaTypeFormatter"/> that will be
+            used to serialize the value when writing this content.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent.#ctor(System.Type,System.Object,System.Net.Http.Formatting.MediaTypeFormatter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent"/> class.
+            </summary>
+            <param name="type">The type of object this instance will contain.</param>
+            <param name="value">The value of the object this instance will contain.</param>
+            <param name="formatter">The formatter to use when serializing the value.</param>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent.#ctor(System.Type,System.Object,System.Net.Http.Formatting.MediaTypeFormatter,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent"/> class.
+            </summary>
+            <param name="type">The type of object this instance will contain.</param>
+            <param name="value">The value of the object this instance will contain.</param>
+            <param name="formatter">The formatter to use when serializing the value.</param>
+            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent.#ctor(System.Type,System.Object,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent"/> class.
+            </summary>
+            <param name="type">The type of object this instance will contain.</param>
+            <param name="value">The value of the object this instance will contain.</param>
+            <param name="formatter">The formatter to use when serializing the value.</param>
+            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent.SerializeToStreamAsync(System.IO.Stream,System.Net.TransportContext)">
+            <summary>
+            Asynchronously serializes the object's content to the given <paramref name="stream"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to which to write.</param>
+            <param name="context">The associated <see cref="T:System.Net.TransportContext"/>.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> instance that is asynchronously serializing the object's content.</returns>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent.TryComputeLength(System.Int64@)">
+            <summary>
+            Computes the length of the stream if possible.
+            </summary>
+            <param name="length">The computed length of the stream.</param>
+            <returns><c>true</c> if the length has been computed; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="P:System.Net.Http.ObjectContent.ObjectType">
+            <summary>
+            Gets the type of object managed by this <see cref="T:System.Net.Http.ObjectContent"/> instance.
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.ObjectContent.Formatter">
+            <summary>
+            The <see cref="T:System.Net.Http.Formatting.MediaTypeFormatter">formatter</see> associated with this content instance.
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.ObjectContent.Value">
+            <summary>
+            Gets or sets the value of the current <see cref="T:System.Net.Http.ObjectContent"/>.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent`1.#ctor(`0,System.Net.Http.Formatting.MediaTypeFormatter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent`1"/> class.
+            </summary>
+            <param name="value">The value of the object this instance will contain.</param>
+            <param name="formatter">The formatter to use when serializing the value.</param>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent`1.#ctor(`0,System.Net.Http.Formatting.MediaTypeFormatter,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent`1"/> class.
+            </summary>
+            <param name="value">The value of the object this instance will contain.</param>
+            <param name="formatter">The formatter to use when serializing the value.</param>
+            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+        </member>
+        <member name="M:System.Net.Http.ObjectContent`1.#ctor(`0,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent`1"/> class.
+            </summary>
+            <param name="value">The value of the object this instance will contain.</param>
+            <param name="formatter">The formatter to use when serializing the value.</param>
+            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+        </member>
         <member name="T:System.Net.Http.PushStreamContent">
             <summary>
             Provides an <see cref="T:System.Net.Http.HttpContent"/> implementation that exposes an output <see cref="T:System.IO.Stream"/>
@@ -745,12 +942,6 @@
             </summary>
             <param name="length">The computed length of the stream.</param>
             <returns><c>true</c> if the length has been computed; otherwise <c>false</c>.</returns>
-        </member>
-        <member name="T:System.Net.Http.Internal.DelegatingStream">
-            <summary>
-            Stream that delegates to inner stream. 
-            This is taken from System.Net.Http
-            </summary>
         </member>
         <member name="M:System.Net.Http.HttpClientFactory.Create(System.Net.Http.DelegatingHandler[])">
             <summary>
@@ -827,7 +1018,7 @@
             Provides data for the events generated by <see cref="T:System.Net.Http.Handlers.ProgressMessageHandler"/>.
             </summary>
         </member>
-        <member name="M:System.Net.Http.Handlers.HttpProgressEventArgs.#ctor(System.Int32,System.Object,System.Int32,System.Nullable{System.Int64})">
+        <member name="M:System.Net.Http.Handlers.HttpProgressEventArgs.#ctor(System.Int32,System.Object,System.Int64,System.Nullable{System.Int64})">
             <summary>
             Initializes a new instance of the <see cref="T:System.Net.Http.Handlers.HttpProgressEventArgs"/> with the parameters given.
             </summary>
@@ -1233,6 +1424,35 @@
             <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
             <returns>A task object representing the asynchronous operation.</returns>
         </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsJsonAsync``1(System.Net.Http.HttpClient,System.Uri,``0)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as JSON.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.JsonMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsJsonAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Threading.CancellationToken)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as JSON.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.JsonMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
         <member name="M:System.Net.Http.HttpClientExtensions.PostAsXmlAsync``1(System.Net.Http.HttpClient,System.String,``0)">
             <summary>
             Sends a POST request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
@@ -1248,6 +1468,35 @@
             <returns>A task object representing the asynchronous operation.</returns>
         </member>
         <member name="M:System.Net.Http.HttpClientExtensions.PostAsXmlAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Threading.CancellationToken)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as XML.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.XmlMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsXmlAsync``1(System.Net.Http.HttpClient,System.Uri,``0)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as XML.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.XmlMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsXmlAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Threading.CancellationToken)">
             <summary>
             Sends a POST request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
             as XML.
@@ -1334,6 +1583,78 @@
             <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
             <returns>A task object representing the asynchronous operation.</returns>
         </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <seealso cref="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)"/>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.Threading.CancellationToken)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <seealso cref="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)"/>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <seealso cref="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)"/>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="mediaType">The authoritative value of the request's content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="mediaType">The authoritative value of the request's content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PostAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue,System.Threading.CancellationToken)">
+            <summary>
+            Sends a POST request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="mediaType">The authoritative value of the request's content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
         <member name="M:System.Net.Http.HttpClientExtensions.PutAsJsonAsync``1(System.Net.Http.HttpClient,System.String,``0)">
             <summary>
             Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
@@ -1363,6 +1684,35 @@
             <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
             <returns>A task object representing the asynchronous operation.</returns>
         </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsJsonAsync``1(System.Net.Http.HttpClient,System.Uri,``0)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as JSON.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.JsonMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsJsonAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Threading.CancellationToken)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as JSON.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.JsonMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
         <member name="M:System.Net.Http.HttpClientExtensions.PutAsXmlAsync``1(System.Net.Http.HttpClient,System.String,``0)">
             <summary>
             Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
@@ -1378,6 +1728,35 @@
             <returns>A task object representing the asynchronous operation.</returns>
         </member>
         <member name="M:System.Net.Http.HttpClientExtensions.PutAsXmlAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Threading.CancellationToken)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as XML.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.XmlMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsXmlAsync``1(System.Net.Http.HttpClient,System.Uri,``0)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
+            as XML.
+            </summary>
+            <remarks>
+            This method uses the default instance of <see cref="T:System.Net.Http.Formatting.XmlMediaTypeFormatter"/>.
+            </remarks>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsXmlAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Threading.CancellationToken)">
             <summary>
             Sends a PUT request as an asynchronous operation to the specified Uri with the given <paramref name="value"/> serialized
             as XML.
@@ -1464,6 +1843,78 @@
             <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
             <returns>A task object representing the asynchronous operation.</returns>
         </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <seealso cref="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)"/>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.Threading.CancellationToken)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <seealso cref="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)"/>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <seealso cref="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.String,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)"/>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="mediaType">The authoritative value of the request's content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="mediaType">The authoritative value of the request's content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:System.Net.Http.HttpClientExtensions.PutAsync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue,System.Threading.CancellationToken)">
+            <summary>
+            Sends a PUT request as an asynchronous operation to the specified Uri with <paramref name="value"/>
+            serialized using the given <paramref name="formatter"/>.
+            </summary>
+            <typeparam name="T">The type of <paramref name="value"/>.</typeparam>
+            <param name="client">The client used to make the request.</param>
+            <param name="requestUri">The Uri the request is sent to.</param>
+            <param name="value">The value that will be placed in the request's entity body.</param>
+            <param name="formatter">The formatter used to serialize the <paramref name="value"/>.</param>
+            <param name="mediaType">The authoritative value of the request's content's Content-Type header. Can be <c>null</c> in which case the
+            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
+            <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+            <returns>A task object representing the asynchronous operation.</returns>
+        </member>
         <member name="T:System.Net.Http.HttpRequestMessageExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Net.Http.HttpRequestMessage"/> class.
@@ -1533,6 +1984,46 @@
         <member name="P:System.Net.Http.Properties.Resources.AsyncResult_ResultMismatch">
             <summary>
               Looks up a localized string similar to An incorrect IAsyncResult was provided to an &apos;End&apos; method. The IAsyncResult object passed to &apos;End&apos; must be the one returned from the matching &apos;Begin&apos; or passed to the callback provided to &apos;Begin&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamContentNoRanges">
+            <summary>
+              Looks up a localized string similar to Found zero byte ranges. There must be at least one byte range provided..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamContentNotBytesRange">
+            <summary>
+              Looks up a localized string similar to The range unit &apos;{0}&apos; is not valid. The range must have a unit of &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamEmpty">
+            <summary>
+              Looks up a localized string similar to The stream over which &apos;{0}&apos; provides a range view must have a length greater than or equal to 1..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamInvalidFrom">
+            <summary>
+              Looks up a localized string similar to The &apos;From&apos; value of the range must be less than or equal to {0}..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamNoneOverlap">
+            <summary>
+              Looks up a localized string similar to None of the requested ranges ({0}) overlap with the current extent of the selected resource..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamNoOverlap">
+            <summary>
+              Looks up a localized string similar to The requested range ({0}) does not overlap with the current extent of the selected resource..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamNotSeekable">
+            <summary>
+              Looks up a localized string similar to The stream over which &apos;{0}&apos; provides a range view must be seekable..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ByteRangeStreamReadOnly">
+            <summary>
+              Looks up a localized string similar to This is a read-only stream..
             </summary>
         </member>
         <member name="P:System.Net.Http.Properties.Resources.CannotHaveNullInList">
@@ -1723,6 +2214,11 @@
         <member name="P:System.Net.Http.Properties.Resources.QueryStringNameShouldNotNull">
             <summary>
               Looks up a localized string similar to Query string name cannot be null..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.ReadAsHttpMessageUnexpectedTermination">
+            <summary>
+              Looks up a localized string similar to Unexpected end of HTTP message stream. HTTP message is not complete..
             </summary>
         </member>
         <member name="P:System.Net.Http.Properties.Resources.ReadAsMimeMultipartArgumentNoBoundary">
@@ -2017,8 +2513,7 @@
         <member name="M:System.Net.Http.Formatting.MediaTypeFormatter.GetPerRequestFormatterInstance(System.Type,System.Net.Http.HttpRequestMessage,System.Net.Http.Headers.MediaTypeHeaderValue)">
             <summary>
             Returns a specialized instance of the <see cref="T:System.Net.Http.Formatting.MediaTypeFormatter"/> that can handle formatting a response for the given
-            parameters. This method is called by <see cref="T:System.Net.Http.Formatting.DefaultContentNegotiator"/> after a formatter has been selected through content
-            negotiation.
+            parameters. This method is called after a formatter has been selected through content negotiation.
             </summary>
             <remarks>
             The default implementation returns <c>this</c> instance. Derived classes can choose to return a new instance if
@@ -2275,12 +2770,19 @@
             <param name="formatter">The formatter to match against.</param>
             <returns>A <see cref="T:System.Net.Http.Formatting.MediaTypeFormatterMatch"/> indicating the quality of the match or null is no match.</returns>
         </member>
+        <member name="M:System.Net.Http.Formatting.DefaultContentNegotiator.ShouldMatchOnType(System.Collections.Generic.IEnumerable{System.Net.Http.Headers.MediaTypeWithQualityHeaderValue})">
+            <summary>
+            Determine whether to match on type or not. This is used to determine whether to
+            generate a 406 response or use the default media type formatter in case there
+            is no match against anything in the request. If ExcludeMatchOnTypeOnly is true 
+            then we don't match on type unless there are no accept headers.
+            </summary>
+            <param name="sortedAcceptValues">The sorted accept header values to match.</param>
+            <returns>True if not ExcludeMatchOnTypeOnly and accept headers with a q-factor bigger than 0.0 are present.</returns>
+        </member>
         <member name="M:System.Net.Http.Formatting.DefaultContentNegotiator.MatchType(System.Type,System.Net.Http.Formatting.MediaTypeFormatter)">
             <summary>
             Pick the first supported media type and indicate we've matched only on type
-            If ExcludeMatchOnTypeOnly is true then we don't match on type only which means
-            that we return null if we can't match on anything in the request. This is useful
-            for generating 406 (Not Acceptable) status codes.
             </summary>
             <param name="type">The type to be serialized.</param>
             <param name="formatter">The formatter we are matching against.</param>
@@ -2936,7 +3438,7 @@
         </member>
         <member name="M:System.Net.Http.Formatting.StringComparisonHelper.Validate(System.StringComparison,System.String)">
             <summary>
-            Validates the specified <paramref name="value"/> and throws an <see cref="T:System.ComponentModel.InvalidEnumArgumentException"/>
+            Validates the specified <paramref name="value"/> and throws an <see cref="T:System.ArgumentException"/>
             exception if not valid.
             </summary>
             <param name="value">The value to validate.</param>
@@ -3821,11 +4323,6 @@
             Gets the set of <see cref="T:System.ArraySegment`1"/> pointing to the read buffer with
             contents of this body part.
             </summary>
-            <remarks>We deliberately use <see cref="T:System.Collections.ArrayList"/> as List{ArraySegment{byte}} and Collection{ArraySegment{byte}} trip FxCop rule CA908
-            which states the following: "Assemblies that are precompiled (using ngen.exe) should only instantiate generic types that will not cause JIT 
-            compilation at runtime. Generic types with value type type parameters (outside of a special set of supported runtime generic types) will 
-            always cause JIT compilation, even if the encapsulating assembly has been precompiled". As we don't want to force JIT'ing we use the old
-            non-generic form which doesn't have this problem (ArraySegment{byte} of course is a value type).</remarks>
         </member>
         <member name="P:System.Net.Http.MimeBodyPart.IsComplete">
             <summary>
@@ -4137,101 +4634,6 @@
             This facilitates deserialization or other manipulation of the contents in memory. 
             </summary>
         </member>
-        <member name="T:System.Net.Http.ObjectContent">
-            <summary>
-            Contains a value as well as an associated <see cref="T:System.Net.Http.Formatting.MediaTypeFormatter"/> that will be
-            used to serialize the value when writing this content.
-            </summary>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent.#ctor(System.Type,System.Object,System.Net.Http.Formatting.MediaTypeFormatter)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent"/> class.
-            </summary>
-            <param name="type">The type of object this instance will contain.</param>
-            <param name="value">The value of the object this instance will contain.</param>
-            <param name="formatter">The formatter to use when serializing the value.</param>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent.#ctor(System.Type,System.Object,System.Net.Http.Formatting.MediaTypeFormatter,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent"/> class.
-            </summary>
-            <param name="type">The type of object this instance will contain.</param>
-            <param name="value">The value of the object this instance will contain.</param>
-            <param name="formatter">The formatter to use when serializing the value.</param>
-            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
-            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent.#ctor(System.Type,System.Object,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent"/> class.
-            </summary>
-            <param name="type">The type of object this instance will contain.</param>
-            <param name="value">The value of the object this instance will contain.</param>
-            <param name="formatter">The formatter to use when serializing the value.</param>
-            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
-            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent.SerializeToStreamAsync(System.IO.Stream,System.Net.TransportContext)">
-            <summary>
-            Asynchronously serializes the object's content to the given <paramref name="stream"/>.
-            </summary>
-            <param name="stream">The <see cref="T:System.IO.Stream"/> to which to write.</param>
-            <param name="context">The associated <see cref="T:System.Net.TransportContext"/>.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> instance that is asynchronously serializing the object's content.</returns>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent.TryComputeLength(System.Int64@)">
-            <summary>
-            Computes the length of the stream if possible.
-            </summary>
-            <param name="length">The computed length of the stream.</param>
-            <returns><c>true</c> if the length has been computed; otherwise <c>false</c>.</returns>
-        </member>
-        <member name="P:System.Net.Http.ObjectContent.ObjectType">
-            <summary>
-            Gets the type of object managed by this <see cref="T:System.Net.Http.ObjectContent"/> instance.
-            </summary>
-        </member>
-        <member name="P:System.Net.Http.ObjectContent.Formatter">
-            <summary>
-            The <see cref="T:System.Net.Http.Formatting.MediaTypeFormatter">formatter</see> associated with this content instance.
-            </summary>
-        </member>
-        <member name="P:System.Net.Http.ObjectContent.Value">
-            <summary>
-            Gets or sets the value of the current <see cref="T:System.Net.Http.ObjectContent"/>.
-            </summary>
-        </member>
-        <member name="T:System.Net.Http.ObjectContent`1">
-            <summary>
-            Generic form of <see cref="T:System.Net.Http.ObjectContent"/>.
-            </summary>
-            <typeparam name="T">The type of object this <see cref="T:System.Net.Http.ObjectContent"/> class will contain.</typeparam>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent`1.#ctor(`0,System.Net.Http.Formatting.MediaTypeFormatter)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent`1"/> class.
-            </summary>
-            <param name="value">The value of the object this instance will contain.</param>
-            <param name="formatter">The formatter to use when serializing the value.</param>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent`1.#ctor(`0,System.Net.Http.Formatting.MediaTypeFormatter,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent`1"/> class.
-            </summary>
-            <param name="value">The value of the object this instance will contain.</param>
-            <param name="formatter">The formatter to use when serializing the value.</param>
-            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
-            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
-        </member>
-        <member name="M:System.Net.Http.ObjectContent`1.#ctor(`0,System.Net.Http.Formatting.MediaTypeFormatter,System.Net.Http.Headers.MediaTypeHeaderValue)">
-            <summary>
-            Initializes a new instance of the <see cref="T:System.Net.Http.ObjectContent`1"/> class.
-            </summary>
-            <param name="value">The value of the object this instance will contain.</param>
-            <param name="formatter">The formatter to use when serializing the value.</param>
-            <param name="mediaType">The authoritative value of the content's Content-Type header. Can be <c>null</c> in which case the
-            <paramref name="formatter">formatter's</paramref> default content type will be used.</param>
-        </member>
         <member name="T:System.Net.Http.Formatting.Parsers.ParserState">
             <summary>
             Represents the overall state of various parsers.
@@ -4339,6 +4741,11 @@
         <member name="P:System.Web.Http.Properties.CommonWebApiResources.ArgumentUriHasQueryOrFragment">
             <summary>
               Looks up a localized string similar to URI must not contain a query component or a fragment identifier..
+            </summary>
+        </member>
+        <member name="P:System.Web.Http.Properties.CommonWebApiResources.InvalidEnumArgument">
+            <summary>
+              Looks up a localized string similar to The value of argument &apos;{0}&apos; ({1}) is invalid for Enum type &apos;{2}&apos;..
             </summary>
         </member>
     </members>

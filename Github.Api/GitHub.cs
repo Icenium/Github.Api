@@ -48,14 +48,20 @@ namespace Github.Api
 			}
 		}
 
-		public GitHub()
+		public GitHub(HttpClient httpClient)
 		{
-			this.httpClient = new HttpClient();
+			this.httpClient = httpClient;
 			this.httpClient.BaseAddress = new Uri("https://api.github.com");
 		}
 
-		public GitHub(IGitHubApiCredentials githubApiCredentials)
-			:this()
+		public GitHub()
+			: this(new HttpClient())
+		{
+
+		}
+
+		public GitHub(HttpClient httpClient, IGitHubApiCredentials githubApiCredentials)
+			: this(httpClient)
 		{
 			if (githubApiCredentials == null)
 			{
@@ -63,6 +69,12 @@ namespace Github.Api
 			}
 
 			this.UpdateCrentials(githubApiCredentials);
+		}
+
+		public GitHub(IGitHubApiCredentials githubApiCredentials)
+			: this(new HttpClient(), githubApiCredentials)
+		{
+
 		}
 
 		public void UpdateCrentials(IGitHubApiCredentials githubApiCredentials)

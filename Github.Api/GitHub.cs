@@ -10,6 +10,8 @@ namespace Github.Api
 {
 	public class GitHub
 	{
+		public const string ServiceAddress = "https://api.github.com";
+
 		private readonly HttpClient httpClient;
 
 		public AuthorizationApi Authorization
@@ -51,7 +53,7 @@ namespace Github.Api
 		public GitHub(HttpClient httpClient)
 		{
 			this.httpClient = httpClient;
-			this.httpClient.BaseAddress = new Uri("https://api.github.com");
+			this.httpClient.BaseAddress = new Uri(ServiceAddress);
 		}
 
 		public GitHub()

@@ -65,8 +65,9 @@ namespace Github.Api.Core
 			}).Unwrap();
 		}
 
-		protected static void CheckRateLimit(HttpResponseHeaders headers)
+		protected static void CheckRateLimit(HttpResponseMessage httpResponseMessage)
 		{
+			var headers = httpResponseMessage.Headers;
 			var rateLimits = headers.Where(x => x.Key.StartsWith("X-RateLimit"));
 			var actualRateLimit = rateLimits.Single(x => x.Key.EndsWith("-Limit"));
 			var remainingRateLimit = rateLimits.Single(x => x.Key.EndsWith("-Remaining"));
@@ -79,22 +80,22 @@ namespace Github.Api.Core
 
 			if (rateLimitRemaining <= 0)
 			{
-				throw new HttpRequestException(string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
+				throw new GitHubRequestException(httpResponseMessage, string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
 			}
 		}
 
-		protected static void EnsureAuthorized(HttpStatusCode statusCode)
+		protected static void EnsureAuthorized(HttpResponseMessage httpResponseMessage)
 		{
-			if (statusCode == System.Net.HttpStatusCode.Unauthorized)
+			if (httpResponseMessage.StatusCode == System.Net.HttpStatusCode.Unauthorized)
 			{
-				throw new HttpRequestException("Access to this method requires an authenticated user");
+				throw new GitHubRequestException(httpResponseMessage, "Access to this method requires an authenticated user");
 			}
 		}
 
 		protected void EnsureAuthorizationAndRateLimit(HttpResponseMessage httpResponseMessage)
 		{
-			EnsureAuthorized(httpResponseMessage.StatusCode);
-			CheckRateLimit(httpResponseMessage.Headers);
+			EnsureAuthorized(httpResponseMessage);
+			CheckRateLimit(httpResponseMessage);
 		}
 
 		protected void EnsureResponseSuccess(HttpResponseMessage httpResponseMessage)

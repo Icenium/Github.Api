@@ -8,7 +8,13 @@ namespace Github.Api
 	{
 		public HttpResponseMessage HttpResponseMessage { get; set; }
 
-		public GitHubRequestException(HttpResponseMessage httpResponseMessage) :base()
+		public GitHubRequestException(HttpResponseMessage httpResponseMessage)
+			: this(httpResponseMessage, null)
+		{
+		}
+
+		public GitHubRequestException(HttpResponseMessage httpResponseMessage, string errorMessage)
+			: base(errorMessage)
 		{
 			this.HttpResponseMessage = httpResponseMessage;
 		}

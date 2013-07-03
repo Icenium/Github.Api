@@ -85,7 +85,7 @@ namespace Github.Api
 			{
 				this.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", githubApiCredentials.Token);
 			}
-			else if (!string.IsNullOrEmpty(githubApiCredentials.Password) && !string.IsNullOrEmpty(githubApiCredentials.Username))
+			else if (!string.IsNullOrEmpty(githubApiCredentials.Username))
 			{
 				string usernamePasswordToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format(CultureInfo.InvariantCulture,
 					"{0}:{1}", new object[] { githubApiCredentials.Username, githubApiCredentials.Password })));

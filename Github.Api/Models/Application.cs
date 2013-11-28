@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Newtonsoft.Json;
 
 namespace Github.Api.Models
 {
-	public class GitHubApplication
+	public class Application
 	{
 		[JsonProperty(PropertyName = "name")]
 		public string Name { get; set; }

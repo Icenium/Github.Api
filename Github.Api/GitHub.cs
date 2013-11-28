@@ -34,6 +34,14 @@ namespace Github.Api
 			}
 		}
 
+		public OrganizationApi Organizations
+		{
+			get
+			{
+				return new OrganizationApi(this.httpClient);
+			}
+		}
+
 		public RepositoryApi Repositories
 		{
 			get

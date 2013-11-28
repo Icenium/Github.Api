@@ -55,6 +55,7 @@
     <Compile Include="Core\Authorization\AuthorizationApi.cs" />
     <Compile Include="Core\GitHubApi.cs" />
     <Compile Include="Core\GitHubError.cs" />
+    <Compile Include="Core\Organizations\OrganizationApi.cs" />
     <Compile Include="Core\Repositories\CreateRepositoryInfo.cs" />
     <Compile Include="Core\Repositories\RepositoryApi.Collaborators.cs" />
     <Compile Include="Core\Repositories\RepositoryQueryDirection.cs" />
@@ -69,13 +70,14 @@
     <Compile Include="Framework\GitHubApiCredentials.cs" />
     <Compile Include="Framework\IGitHubApiCredentials.cs" />
     <Compile Include="GitHub.cs" />
+    <Compile Include="Models\Account.cs" />
     <Compile Include="Models\Authorization.cs" />
-    <Compile Include="Models\Following.cs" />
-    <Compile Include="Models\GitHubApplication.cs" />
-    <Compile Include="Models\GitHubSshKey.cs" />
+    <Compile Include="Models\Application.cs" />
+    <Compile Include="Models\AccountType.cs" />
+    <Compile Include="Models\SshKey.cs" />
+    <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\Plan.cs" />
     <Compile Include="Models\Repository.cs" />
-    <Compile Include="Models\UpdateableUser.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

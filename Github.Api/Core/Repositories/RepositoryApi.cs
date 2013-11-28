@@ -50,6 +50,18 @@ namespace Github.Api.Core
 			return this.CreateUserRepositoryCore(queryContent);
 		}
 
+		public Task<Repository> CreateOrganizationRepository(string organization, string name)
+		{
+			var queryContent = this.GetStringContent(new { name = name });
+			return this.CreateOrganizationRepositoryCore(organization, queryContent);
+		}
+
+		public Task<Repository> CreateOrganizationRepository(string organization, CreateRepositoryInfo createRepositoryInfo)
+		{
+			var queryContent = this.GetStringContent(createRepositoryInfo);
+			return this.CreateOrganizationRepositoryCore(organization, queryContent);
+		}
+
 		public Task DeleteUserRepository(string username, string repositoryName)
 		{
 			return this.httpClient.DeleteAsync(string.Format("/repos/{0}/{1}", username, repositoryName)).ContinueWith(t =>
@@ -115,6 +127,11 @@ namespace Github.Api.Core
 		private Task<Repository> CreateUserRepositoryCore(StringContent queryContent)
 		{
 			return this.CreateAsync("/user/repos", queryContent, this.ReadErrorMessage<Repository>);
+		}
+
+		private Task<Repository> CreateOrganizationRepositoryCore(string organization, StringContent queryContent)
+		{
+			return this.CreateAsync(string.Format("/orgs/{0}/repos", organization), queryContent, this.ReadErrorMessage<Repository>);
 		}
 
 		private Task<IEnumerable<Repository>> GetRepositoriesCore(string url)

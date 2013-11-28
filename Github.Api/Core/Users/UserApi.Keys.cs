@@ -10,10 +10,10 @@ namespace Github.Api.Core
 {
 	public partial class UserApi
 	{
-		public Task<GitHubSshKey> CreateKeyAsync(string title, string key)
+		public Task<SshKey> CreateKeyAsync(string title, string key)
 		{
 			var queryContent = this.GetStringContent(new { title = title, key = key });
-			return this.CreateAsync<GitHubSshKey>("/user/keys", queryContent, this.ReadErrors<GitHubSshKey>);
+			return this.CreateAsync<SshKey>("/user/keys", queryContent, this.ReadErrors<SshKey>);
 		}
 
 		public Task DeleteKeyAsync(string id)
@@ -25,17 +25,17 @@ namespace Github.Api.Core
 					   });
 		}
 
-		public Task<GitHubSshKey> GetKeyAsync(string id)
+		public Task<SshKey> GetKeyAsync(string id)
 		{
-			return this.GetAsync<GitHubSshKey>(string.Format("/user/keys/{0}", id));
+			return this.GetAsync<SshKey>(string.Format("/user/keys/{0}", id));
 		}
 
-		public Task<IList<GitHubSshKey>> GetKeysAsync()
+		public Task<IList<SshKey>> GetKeysAsync()
 		{
-			return this.GetAsync<IList<GitHubSshKey>>("/user/keys");
+			return this.GetAsync<IList<SshKey>>("/user/keys");
 		}
 
-		public Task<GitHubSshKey> UpdateKeyAsync(string title, string key, string id)
+		public Task<SshKey> UpdateKeyAsync(string title, string key, string id)
 		{
 			var queryContent = this.GetStringContent(new { title = title, key = key });
 			var requestMessage = new HttpRequestMessage(new HttpMethod("Patch"), string.Format("/user/keys/{0}", id))
@@ -47,7 +47,7 @@ namespace Github.Api.Core
 					   {
 						   this.EnsureResponseSuccess(t.Result);
 
-						   return t.Result.Content.ReadAsAsync<GitHubSshKey>(mediaTypeFormatterCollection);
+						   return t.Result.Content.ReadAsAsync<SshKey>(mediaTypeFormatterCollection);
 					   }).Unwrap();
 		}
 	}

@@ -16,22 +16,22 @@ namespace Github.Api.Core
 			});
 		}
 
-		public Task<IList<Following>> GetFollowersAsync(User user)
+		public Task<IList<User>> GetFollowersAsync(User user)
 		{
 			return this.GetFollowersAsync(user.Login);
 		}
 
-		public Task<IList<Following>> GetFollowersAsync(string username)
+		public Task<IList<User>> GetFollowersAsync(string username)
 		{
 			return this.GetFollowingCoreAsync(string.Format("/users/{0}/followers", username));
 		}
 
-		public Task<IList<Following>> GetFollowingAsync(User user)
+		public Task<IList<User>> GetFollowingAsync(User user)
 		{
 			return this.GetFollowingAsync(user.Login);
 		}
 
-		public Task<IList<Following>> GetFollowingAsync(string username)
+		public Task<IList<User>> GetFollowingAsync(string username)
 		{
 			return this.GetFollowingCoreAsync(string.Format("/users/{0}/following", username));
 		}
@@ -44,9 +44,9 @@ namespace Github.Api.Core
 			});
 		}
 
-		private Task<IList<Following>> GetFollowingCoreAsync(string url)
+		private Task<IList<User>> GetFollowingCoreAsync(string url)
 		{
-			return this.GetAsync<IList<Following>>(url);
+			return this.GetAsync<IList<User>>(url);
 		}
 	}
 }

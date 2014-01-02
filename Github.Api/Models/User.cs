@@ -1,43 +1,47 @@
-﻿namespace Github.Api.Models
+﻿using System;
+using Newtonsoft.Json;
+
+namespace Github.Api.Models
 {
-	public class User : UpdateableUser
+	public class User : Account
 	{
-		//public, authentication not required
-		public string Id { get; set; }
-		public string Login { get; set; }
-		public int FollowingCount { get; set; }
-		public int FollowersCount { get; set; }
-		public int PublicGistCount { get; set; }
-		public int PublicRepoCount { get; set; }
+		[JsonProperty(PropertyName = "gravatar_id")]
+		public string GravatarId { get; set; }
 
-		//private, authentication required
-		public int TotalPrivateRepoCount { get; set; }
-		public int Collaborators { get; set; }
-		public long DiskUsage { get; set; }
-		public int OwnedPrivateRepoCount { get; set; }
-		public int PrivateGistCount { get; set; }
-		public Plan Plan { get; set; }
+		[JsonProperty(PropertyName = "followers_url")]
+		public string FollowersUrl { get; set; }
 
-		public override bool Equals(object obj)
-		{
-			if (obj is User)
-			{
-				var compareTo = (User)obj;
+		[JsonProperty(PropertyName = "following_url")]
+		public string FollowingUrl { get; set; }
 
-				return compareTo.Id.Equals(Id) && compareTo.Login.Equals(Login);
-			}
+		[JsonProperty(PropertyName = "gists_url")]
+		public string GistsUrl { get; set; }
 
-			return base.Equals(obj);
-		}
+		[JsonProperty(PropertyName = "starred_url")]
+		public string StarredUrl { get; set; }
 
-		public override int GetHashCode()
-		{
-			return Id.GetHashCode() + Login.GetHashCode();
-		}
+		[JsonProperty(PropertyName = "subscriptions_url")]
+		public string SubscriptionsUrl { get; set; }
 
-		public override string ToString()
-		{
-			return Name;
-		}
+		[JsonProperty(PropertyName = "organizations_url")]
+		public string OrganizationsUrl { get; set; }
+
+		[JsonProperty(PropertyName = "repos_url")]
+		public string ReposUrl { get; set; }
+
+		[JsonProperty(PropertyName = "events_url")]
+		public string EventsUrl { get; set; }
+
+		[JsonProperty(PropertyName = "received_events_url")]
+		public string ReceivedEventsUrl { get; set; }
+
+		[JsonProperty(PropertyName = "site_admin")]
+		public bool SiteAdmin { get; set; }
+
+		[JsonProperty(PropertyName = "hireable")]
+		public bool Hireable { get; set; }
+
+		[JsonProperty(PropertyName = "bio")]
+		public string Bio { get; set; }
 	}
 }

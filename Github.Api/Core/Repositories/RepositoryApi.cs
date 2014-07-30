@@ -70,19 +70,19 @@ namespace Github.Api.Core
 			});
 		}
 
-		public Task<IEnumerable<Repository>> GetOrganizationRepositoriesAsync(string organization, int pageSize)
+		public Task<IEnumerable<Repository>> GetOrganizationRepositoriesAsync(string organization)
 		{
-			return this.GetRepositoriesCore(string.Format("/orgs/{0}/repos?per_page={1}", organization, pageSize));
+			return this.GetRepositoriesCore(string.Format("/orgs/{0}/repos", organization));
 		}
 
-		public Task<IEnumerable<Repository>> GetOrganizationRepositoriesAsync(string organization, RepositoryQueryType type, int pageSize)
+		public Task<IEnumerable<Repository>> GetOrganizationRepositoriesAsync(string organization, RepositoryQueryType type)
 		{
 			if (type == RepositoryQueryType.Owner)
 			{
 				throw new NotSupportedException();
 			}
 
-			return this.GetRepositoriesCore(string.Format("/orgs/{0}/repos?type={1}&per_page={2}", organization, queryTypes[type], pageSize));
+			return this.GetRepositoriesCore(string.Format("/orgs/{0}/repos?type={1}", organization, queryTypes[type]));
 		}
 
 		public Task<IEnumerable<Repository>> GetRepositoriesAsync()

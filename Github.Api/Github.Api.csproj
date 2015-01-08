@@ -62,6 +62,8 @@
     <Compile Include="Core\Repositories\RepositoryQuerySort.cs" />
     <Compile Include="Core\Repositories\RepositoryApi.cs" />
     <Compile Include="Core\Repositories\RepositoryQueryType.cs" />
+    <Compile Include="Core\Search\SearchApi.cs" />
+    <Compile Include="Core\Search\SearchTargetType.cs" />
     <Compile Include="Core\Users\UserApi.Keys.cs" />
     <Compile Include="Core\Users\UserApi.cs" />
     <Compile Include="Core\Users\UserApi.Followers.cs" />
@@ -74,6 +76,7 @@
     <Compile Include="Models\Authorization.cs" />
     <Compile Include="Models\Application.cs" />
     <Compile Include="Models\AccountType.cs" />
+    <Compile Include="Models\SearchRepositoryResult.cs" />
     <Compile Include="Models\SshKey.cs" />
     <Compile Include="Models\Organization.cs" />
     <Compile Include="Models\Plan.cs" />

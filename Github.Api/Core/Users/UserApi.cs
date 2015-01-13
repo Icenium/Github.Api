@@ -35,10 +35,10 @@ namespace Github.Api.Core
 
 		public Task<IEnumerable<User>> SearchUser(string username)
 		{
-			return this.GetDynamicAsync(string.Format("/legacy/user/search/{0}", username)).ContinueWith(t =>
+			return this.GetDynamicAsync(string.Format("/search/users?q={0}", username)).ContinueWith(t =>
 				{
 					var serializer = JsonSerializer.Create(new JsonSerializerSettings());
-					var users = ((JObject)t.Result)["users"];
+					var users = ((JObject)t.Result)["items"];
 					var reader = new JTokenReader(users);
 					return serializer.Deserialize<IEnumerable<User>>(reader);
 				});

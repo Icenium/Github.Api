@@ -58,6 +58,14 @@ namespace Github.Api
 			}
 		}
 
+		public SearchApi Search
+		{
+			get
+			{
+				return new SearchApi(this.httpClient);
+			}
+		}
+
 		public GitHub(HttpClient httpClient)
 		{
 			this.httpClient = httpClient;

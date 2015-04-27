@@ -58,6 +58,7 @@
     <Compile Include="Core\Organizations\OrganizationApi.cs" />
     <Compile Include="Core\Repositories\CreateRepositoryInfo.cs" />
     <Compile Include="Core\Repositories\RepositoryApi.Collaborators.cs" />
+    <Compile Include="Core\Repositories\RepositoryArchiveType.cs" />
     <Compile Include="Core\Repositories\RepositoryQueryDirection.cs" />
     <Compile Include="Core\Repositories\RepositoryQuerySort.cs" />
     <Compile Include="Core\Repositories\RepositoryApi.cs" />

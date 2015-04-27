@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Github.Api.Extensions;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Github.Api.Core
 {
@@ -62,22 +63,36 @@ namespace Github.Api.Core
 			}).Unwrap();
 		}
 
+		public Task<Stream> GetAsStreamAsync(string url)
+		{
+			return this.httpClient.GetAsync(url).ContinueWith(t =>
+			{
+				this.EnsureAuthorizationAndRateLimit(t.Result);
+
+				t.Result.EnsureResponseSuccessStatusCode();
+				return t.Result.Content.ReadAsStreamAsync();
+			}).Unwrap();
+		}
+
 		protected static void CheckRateLimit(HttpResponseMessage httpResponseMessage)
 		{
 			var headers = httpResponseMessage.Headers;
 			var rateLimits = headers.Where(x => x.Key.StartsWith("X-RateLimit"));
-			var actualRateLimit = rateLimits.Single(x => x.Key.EndsWith("-Limit"));
-			var remainingRateLimit = rateLimits.Single(x => x.Key.EndsWith("-Remaining"));
-
-			var rateLimit = Convert.ToInt32(actualRateLimit.Value.Single());
-
-			var rateLimitRemaining = Convert.ToInt32(remainingRateLimit.Value.Single());
-
-			Debug.WriteLine(string.Format("Current remaining rate limit: {0}", rateLimitRemaining));
-
-			if (rateLimitRemaining <= 0)
+			if (rateLimits.Any())
 			{
-				throw new GitHubRequestException(httpResponseMessage, string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
+				var actualRateLimit = rateLimits.Single(x => x.Key.EndsWith("-Limit"));
+				var remainingRateLimit = rateLimits.Single(x => x.Key.EndsWith("-Remaining"));
+
+				var rateLimit = Convert.ToInt32(actualRateLimit.Value.Single());
+
+				var rateLimitRemaining = Convert.ToInt32(remainingRateLimit.Value.Single());
+
+				Debug.WriteLine(string.Format("Current remaining rate limit: {0}", rateLimitRemaining));
+
+				if (rateLimitRemaining <= 0)
+				{
+					throw new GitHubRequestException(httpResponseMessage, string.Format("Github API rate limit ({0}) has been reached.", rateLimit));
+				}
 			}
 		}
 

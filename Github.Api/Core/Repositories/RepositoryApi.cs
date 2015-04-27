@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Github.Api.Models;
+using System.IO;
 
 namespace Github.Api.Core
 {
@@ -105,6 +106,11 @@ namespace Github.Api.Core
 		public Task<IEnumerable<Repository>> GetUserRepositoriesAsync(string username)
 		{
 			return this.GetRepositoriesCore(string.Format("/users/{0}/repos", username));
+		}
+
+		public Task<Stream> GetRepositoryArchiveAsync(string repositoryFullName, RepositoryArchiveType archiveType)
+		{
+			return this.GetAsStreamAsync(string.Format("/repos/{0}/{1}", repositoryFullName, archiveType.ToString().ToLower()));
 		}
 
 		public Task<IEnumerable<Repository>> GetUserRepositoriesAsync(string username, RepositoryQueryType type)

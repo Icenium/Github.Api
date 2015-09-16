@@ -70,6 +70,7 @@
     <Compile Include="Core\Repositories\RepositoryApi.cs" />
     <Compile Include="Core\Repositories\RepositoryQueryType.cs" />
     <Compile Include="Core\Search\SearchApi.cs" />
+    <Compile Include="Core\Search\SearchApiHelper.cs" />
     <Compile Include="Core\Search\SearchTargetType.cs" />
     <Compile Include="Core\Users\UserApi.Keys.cs" />
     <Compile Include="Core\Users\UserApi.cs" />

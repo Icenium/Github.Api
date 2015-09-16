@@ -39,7 +39,7 @@ namespace Github.Api.Models
 		public bool SiteAdmin { get; set; }
 
 		[JsonProperty(PropertyName = "hireable")]
-		public bool Hireable { get; set; }
+		public bool? Hireable { get; set; }
 
 		[JsonProperty(PropertyName = "bio")]
 		public string Bio { get; set; }

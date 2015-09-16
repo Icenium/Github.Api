@@ -69,7 +69,7 @@ namespace Github.Api.Models
 		public DateTime UpdatedAt { get; set; }
 
 		[JsonProperty(PropertyName = "type")]
-		public AccountType Type { get; set; }
+		public AccountType? Type { get; set; }
 
 		[JsonProperty(PropertyName = "plan")]
 		public Plan Plan { get; set; }

@@ -69,7 +69,7 @@ namespace Github.Api.Models
 		public int OpenIssuesCount { get; set; }
 
 		[JsonProperty(PropertyName = "pushed_at")]
-		public DateTimeOffset PushedAt { get; set; }
+		public DateTimeOffset? PushedAt { get; set; }
 
 		[JsonProperty(PropertyName = "created_at")]
 		public DateTimeOffset CreatedAt { get; set; }

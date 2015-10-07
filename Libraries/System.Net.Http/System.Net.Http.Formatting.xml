@@ -4,21 +4,79 @@
         <name>System.Net.Http.Formatting</name>
     </assembly>
     <members>
-        <member name="T:System.Web.Http.DictionaryExtensions">
+        <member name="T:System.Collections.Generic.CollectionExtensions">
             <summary>
-            Extension methods for <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            Helper extension methods for fast use of collections.
             </summary>
         </member>
-        <member name="M:System.Web.Http.DictionaryExtensions.TryGetValue``1(System.Collections.Generic.IDictionary{System.String,System.Object},System.String,``0@)">
+        <member name="M:System.Collections.Generic.CollectionExtensions.AppendAndReallocate``1(``0[],``0)">
             <summary>
-            Gets the value of <typeparamref name="T"/> associated with the specified key or <c>default</c> value if
-            either the key is not present or the value is not of type <typeparamref name="T"/>. 
+            Return a new array with the value added to the end. Slow and best suited to long lived arrays with few writes relative to reads.
             </summary>
-            <typeparam name="T">The type of the value associated with the specified key.</typeparam>
-            <param name="collection">The <see cref="T:System.Collections.Generic.IDictionary`2"/> instance where <c>TValue</c> is <c>object</c>.</param>
-            <param name="key">The key whose value to get.</param>
-            <param name="value">When this method returns, the value associated with the specified key, if the key is found; otherwise, the default value for the type of the value parameter.</param>
-            <returns><c>true</c> if key was found, value is non-null, and value is of type <typeparamref name="T"/>; otherwise false.</returns>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.AsArray``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Return the enumerable as an Array, copying if required. Optimized for common case where it is an Array. 
+            Avoid mutating the return value.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.AsCollection``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Return the enumerable as a Collection of T, copying if required. Optimized for the common case where it is 
+            a Collection of T and avoiding a copy if it implements IList of T. Avoid mutating the return value.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.AsIList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Return the enumerable as a IList of T, copying if required. Avoid mutating the return value.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.AsList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Return the enumerable as a List of T, copying if required. Optimized for common case where it is an List of T 
+            or a ListWrapperCollection of T. Avoid mutating the return value.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.RemoveFrom``1(System.Collections.Generic.List{``0},System.Int32)">
+            <summary>
+            Remove values from the list starting at the index start.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.SingleDefaultOrError``2(System.Collections.Generic.IList{``0},System.Action{``1},``1)">
+            <summary>
+            Return the only value from list, the type's default value if empty, or call the errorAction for 2 or more.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.SingleOfTypeDefaultOrError``3(System.Collections.Generic.IList{``0},System.Action{``2},``2)">
+            <summary>
+            Returns a single value in list matching type TMatch if there is only one, null if there are none of type TMatch or calls the
+            errorAction with errorArg1 if there is more than one.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.ToArrayWithoutNulls``1(System.Collections.Generic.ICollection{``0})">
+            <summary>
+            Convert an ICollection to an array, removing null values. Fast path for case where there are no null values.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.ToDictionaryFast``2(``1[],System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Convert the array to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for array input.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.ToDictionaryFast``2(System.Collections.Generic.IList{``1},System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Convert the list to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for IList of T input with fast path for array.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.ToDictionaryFast``2(System.Collections.Generic.IEnumerable{``1},System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Convert the enumerable to a Dictionary using the keySelector to extract keys from values and the specified comparer. Fast paths for array and IList of T.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.CollectionExtensions.ToDictionaryFastNoCheck``2(System.Collections.Generic.IList{``1},System.Func{``1,``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Convert the list to a Dictionary using the keySelector to extract keys from values and the specified comparer. Optimized for IList of T input. No checking for other types.
+            </summary>
         </member>
         <member name="T:System.Web.Http.Error">
             <summary>
@@ -202,6 +260,11 @@
             <param name="messageArgs">An object array that contains zero or more objects to format.</param>
             <returns>The logged <see cref="T:System.Exception"/>.</returns>
         </member>
+        <member name="T:System.Collections.ObjectModel.ListWrapperCollection`1">
+            <summary>
+            A class that inherits from Collection of T but also exposes its underlying data as List of T for performance.
+            </summary>
+        </member>
         <member name="T:System.Threading.Tasks.TaskHelpers">
             <summary>
             Helpers for safely using Task libraries. 
@@ -269,54 +332,6 @@
             <summary>
             Fallback for IterateImpl when the antecedent Task isn't yet complete.
             </summary>
-        </member>
-        <member name="M:System.Threading.Tasks.TaskHelpers.RunSynchronously(System.Action,System.Threading.CancellationToken)">
-            <summary>
-            Replacement for Task.Factory.StartNew when the code can run synchronously. 
-            We run the code immediately and avoid the thread switch. 
-            This is used to help synchronous code implement task interfaces.
-            </summary>
-            <param name="action">action to run synchronouslyt</param>
-            <param name="token">cancellation token. This is only checked before we run the task, and if cancelled, we immediately return a cancelled task.</param>
-            <returns>a task who result is the result from Func()</returns>
-            <remarks>
-            Avoid calling Task.Factory.StartNew.         
-            This avoids gotchas with StartNew:
-            - ensures cancellation token is checked (StartNew doesn't check cancellation tokens).
-            - Keeps on the same thread. 
-            - Avoids switching synchronization contexts.
-            Also take in a lambda so that we can wrap in a try catch and honor task failure semantics.        
-            </remarks>
-        </member>
-        <member name="M:System.Threading.Tasks.TaskHelpers.RunSynchronously``1(System.Func{``0},System.Threading.CancellationToken)">
-            <summary>
-            Replacement for Task.Factory.StartNew when the code can run synchronously. 
-            We run the code immediately and avoid the thread switch. 
-            This is used to help synchronous code implement task interfaces.
-            </summary>
-            <typeparam name="TResult">type of result that task will return.</typeparam>
-            <param name="func">function to run synchronously and produce result</param>
-            <param name="cancellationToken">cancellation token. This is only checked before we run the task, and if cancelled, we immediately return a cancelled task.</param>
-            <returns>a task who result is the result from Func()</returns>
-            <remarks>
-            Avoid calling Task.Factory.StartNew.         
-            This avoids gotchas with StartNew:
-            - ensures cancellation token is checked (StartNew doesn't check cancellation tokens).
-            - Keeps on the same thread. 
-            - Avoids switching synchronization contexts.
-            Also take in a lambda so that we can wrap in a try catch and honor task failure semantics.        
-            </remarks>
-        </member>
-        <member name="M:System.Threading.Tasks.TaskHelpers.RunSynchronously``1(System.Func{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
-            <summary>
-            Overload of RunSynchronously that avoids a call to Unwrap(). 
-            This overload is useful when func() starts doing some synchronous work and then hits IO and 
-            needs to create a task to finish the work. 
-            </summary>
-            <typeparam name="TResult">type of result that Task will return</typeparam>
-            <param name="func">function that returns a task</param>
-            <param name="cancellationToken">cancellation token. This is only checked before we run the task, and if cancelled, we immediately return a cancelled task.</param>
-            <returns>a task, created by running func().</returns>
         </member>
         <member name="M:System.Threading.Tasks.TaskHelpers.SetIfTaskFailed``1(System.Threading.Tasks.TaskCompletionSource{``0},System.Threading.Tasks.Task)">
             <summary>
@@ -691,6 +706,18 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> which will provide the result. If the data can not be read
             as HTML form URL-encoded data then the result is null.</returns>
         </member>
+        <member name="T:System.Net.Http.UnsupportedMediaTypeException">
+            <summary>
+            Defines an exception type for signalling that a request's media type was not supported.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.UnsupportedMediaTypeException.#ctor(System.String,System.Net.Http.Headers.MediaTypeHeaderValue)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.UnsupportedMediaTypeException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="mediaType">The unsupported media type.</param>
+        </member>
         <member name="T:System.Net.Http.Internal.ByteRangeStream">
             <summary>
             Stream which only exposes a read-only only range view of an 
@@ -709,15 +736,6 @@
             </summary>
             <param name="count">The count requested to be read by the caller.</param>
             <returns>The remaining bytes to read within the range defined for this stream.</returns>
-        </member>
-        <member name="T:System.Net.Http.Internal.MultipartWriteDelegatingStream">
-            <summary>
-            This stream synchronizes async writes on streams written to by <see cref="T:System.Net.Http.MultipartFileStreamProvider"/>.
-            This works around a race condition that happens when using APM to write asynchronously to a 
-            <see cref="T:System.IO.FileStream"/>. The impact of the race condition is that the file may still be in 
-            the process of being closed as control returns to the user causing an <see cref="T:System.IO.IOException"/>
-            to be thrown.
-            </summary>
         </member>
         <member name="T:System.Net.Http.Internal.ReadOnlyStreamWithEncodingPreamble">
             <summary>
@@ -2281,11 +2299,6 @@
               Looks up a localized string similar to The &apos;{0}&apos; serializer cannot serialize the type &apos;{1}&apos;..
             </summary>
         </member>
-        <member name="P:System.Net.Http.Properties.Resources.UndefinedMediaType">
-            <summary>
-              Looks up a localized string similar to &apos;undefined&apos;.
-            </summary>
-        </member>
         <member name="P:System.Net.Http.Properties.Resources.UnMatchedBracketNotValid">
             <summary>
               Looks up a localized string similar to There is an unmatched opened bracket for the &apos;{0}&apos; at position {1}..
@@ -2294,6 +2307,16 @@
         <member name="P:System.Net.Http.Properties.Resources.UnsupportedIndent">
             <summary>
               Looks up a localized string similar to Indentation is not supported by &apos;{0}&apos;..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.XmlMediaTypeFormatter_InvalidSerializerType">
+            <summary>
+              Looks up a localized string similar to The object of type &apos;{0}&apos; returned by {1} must be an instance of either XmlObjectSerializer or XmlSerializer..
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.Properties.Resources.XmlMediaTypeFormatter_NullReturnedSerializer">
+            <summary>
+              Looks up a localized string similar to The object returned by {0} must not be a null value..
             </summary>
         </member>
         <member name="T:System.Net.Http.FormattingUtilities">
@@ -2412,6 +2435,22 @@
             <param name="value">The value to parse</param>
             <param name="result">The result</param>
             <returns>True if value was valid; false otherwise.</returns>
+        </member>
+        <member name="T:System.Net.Http.Formatting.JsonContractResolver">
+            <summary>
+            Represents the default <see cref="T:Newtonsoft.Json.Serialization.IContractResolver"/> used by <see cref="T:System.Net.Http.Formatting.JsonMediaTypeFormatter"/>.
+            It uses the formatter's <see cref="T:System.Net.Http.Formatting.IRequiredMemberSelector"/> to select required members and recognizes
+            the <see cref="T:System.SerializableAttribute"/> type annotation.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.Formatting.JsonContractResolver.#ctor(System.Net.Http.Formatting.MediaTypeFormatter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Net.Http.Formatting.JsonContractResolver"/> class.
+            </summary>
+            <param name="formatter">The formatter to use for resolving required members.</param>
+        </member>
+        <member name="M:System.Net.Http.Formatting.JsonContractResolver.CreateProperty(System.Reflection.MemberInfo,Newtonsoft.Json.MemberSerialization)">
+            <inheritDoc />
         </member>
         <member name="T:System.Net.Http.Formatting.BufferedMediaTypeFormatter">
             <summary>
@@ -3546,6 +3585,22 @@
             <param name="formatterLogger">The <see cref="T:System.Net.Http.Formatting.IFormatterLogger"/> to log events to.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> whose result will be the object instance that has been read.</returns>
         </member>
+        <member name="M:System.Net.Http.Formatting.XmlMediaTypeFormatter.GetDeserializer(System.Type,System.Net.Http.HttpContent)">
+            <summary>
+            Called during deserialization to get the XML serializer to use for deserializing objects.
+            </summary>
+            <param name="type">The type of object to deserialize.</param>
+            <param name="content">The <see cref="T:System.Net.Http.HttpContent"/> for the content being read.</param>
+            <returns>An instance of <see cref="T:System.Runtime.Serialization.XmlObjectSerializer"/> or <see cref="T:System.Xml.Serialization.XmlSerializer"/> to use for deserializing the object.</returns>
+        </member>
+        <member name="M:System.Net.Http.Formatting.XmlMediaTypeFormatter.CreateXmlReader(System.IO.Stream,System.Net.Http.HttpContent)">
+            <summary>
+            Called during deserialization to get the XML reader to use for reading objects from the stream.
+            </summary>
+            <param name="readStream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="content">The <see cref="T:System.Net.Http.HttpContent"/> for the content being read.</param>
+            <returns>The <see cref="T:System.Xml.XmlReader"/> to use for reading objects.</returns>
+        </member>
         <member name="M:System.Net.Http.Formatting.XmlMediaTypeFormatter.WriteToStreamAsync(System.Type,System.Object,System.IO.Stream,System.Net.Http.HttpContent,System.Net.TransportContext)">
             <summary>
             Called during serialization to write an object of the specified <paramref name="type"/>
@@ -3557,6 +3612,23 @@
             <param name="content">The <see cref="T:System.Net.Http.HttpContent"/> for the content being written.</param>
             <param name="transportContext">The <see cref="T:System.Net.TransportContext"/>.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that will write the value to the stream.</returns>
+        </member>
+        <member name="M:System.Net.Http.Formatting.XmlMediaTypeFormatter.GetSerializer(System.Type,System.Object,System.Net.Http.HttpContent)">
+            <summary>
+            Called during serialization to get the XML serializer to use for serializing objects.
+            </summary>
+            <param name="type">The type of object to serialize.</param>
+            <param name="value">The object to serialize.</param>
+            <param name="content">The <see cref="T:System.Net.Http.HttpContent"/> for the content being written.</param>
+            <returns>An instance of <see cref="T:System.Runtime.Serialization.XmlObjectSerializer"/> or <see cref="T:System.Xml.Serialization.XmlSerializer"/> to use for serializing the object.</returns>
+        </member>
+        <member name="M:System.Net.Http.Formatting.XmlMediaTypeFormatter.CreateXmlWriter(System.IO.Stream,System.Net.Http.HttpContent)">
+            <summary>
+            Called during serialization to get the XML writer to use for writing objects to the stream.
+            </summary>
+            <param name="writeStream">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="content">The <see cref="T:System.Net.Http.HttpContent"/> for the content being written.</param>
+            <returns>The <see cref="T:System.Xml.XmlWriter"/> to use for writing objects.</returns>
         </member>
         <member name="P:System.Net.Http.Formatting.XmlMediaTypeFormatter.DefaultMediaType">
             <summary>
@@ -3895,11 +3967,6 @@
             Managing state for asynchronous read and write operations
             </summary>
         </member>
-        <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.Parent">
-            <summary>
-            Gets the parent HttpContent MIME content.
-            </summary>
-        </member>
         <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.ContentStream">
             <summary>
             Gets the <see cref="T:System.IO.Stream"/> that we read from.
@@ -3910,11 +3977,6 @@
             Gets the collection of parsed <see cref="T:System.Net.Http.HttpContent"/> instances.
             </summary>
         </member>
-        <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.TaskCompletionSource">
-            <summary>
-            Gets the task completion source managing when we are done parsing the MIME multipart message
-            </summary>
-        </member>
         <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.Data">
             <summary>
             The data buffer that we use for reading data from the input stream into before processing.
@@ -3923,16 +3985,6 @@
         <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.MimeParser">
             <summary>
             Gets the MIME parser instance used to parse the data
-            </summary>
-        </member>
-        <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.PartsEnumerator">
-            <summary>
-            Gets or sets the parts enumerator for going through the parsed parts.
-            </summary>
-        </member>
-        <member name="P:System.Net.Http.HttpContentMultipartExtensions.MultipartAsyncContext.SegmentsEnumerator">
-            <summary>
-            Gets or sets the segments enumerator for going through the segments within each part.
             </summary>
         </member>
         <member name="T:System.Net.Http.HttpMessageContent">
@@ -4272,14 +4324,29 @@
             Maintains information about MIME body parts parsed by <see cref="T:System.Net.Http.Formatting.Parsers.MimeMultipartBodyPartParser"/>.
             </summary>
         </member>
-        <member name="M:System.Net.Http.MimeBodyPart.#ctor(System.Net.Http.MultipartStreamProvider,System.Int32)">
+        <member name="M:System.Net.Http.MimeBodyPart.#ctor(System.Net.Http.MultipartStreamProvider,System.Int32,System.Net.Http.HttpContent)">
             <summary>
             Initializes a new instance of the <see cref="T:System.Net.Http.MimeBodyPart"/> class.
             </summary>
             <param name="streamProvider">The stream provider.</param>
             <param name="maxBodyPartHeaderSize">The max length of the MIME header within each MIME body part.</param>
+            <param name="parentContent">The part's parent content</param>
         </member>
-        <member name="M:System.Net.Http.MimeBodyPart.GetOutputStream(System.Net.Http.HttpContent)">
+        <member name="M:System.Net.Http.MimeBodyPart.GetCompletedHttpContent">
+            <summary>
+            Gets the part's content as an HttpContent.
+            </summary>
+            <value>
+            The part's content, or null if the part had no content.
+            </value>
+        </member>
+        <member name="M:System.Net.Http.MimeBodyPart.WriteSegment(System.ArraySegment{System.Byte})">
+            <summary>
+            Writes the <paramref name="segment"/> into the part's output stream.
+            </summary>
+            <param name="segment">The current segment to be written to the part's output stream.</param>
+        </member>
+        <member name="M:System.Net.Http.MimeBodyPart.GetOutputStream">
             <summary>
             Gets the output stream.
             </summary>
@@ -4296,6 +4363,12 @@
             </summary>
             <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         </member>
+        <member name="M:System.Net.Http.MimeBodyPart.CleanupHttpContent">
+            <summary>
+            In the success case, the HttpContent is to be used after this Part has been parsed and disposed of.
+            Only if Dispose has been called on a non-completed part, the parsed HttpContent needs to be disposed of as well.
+            </summary>
+        </member>
         <member name="M:System.Net.Http.MimeBodyPart.CleanupOutputStream">
             <summary>
             Resets the output stream by either closing it or, in the case of a <see cref="T:System.IO.MemoryStream"/> resetting
@@ -4308,14 +4381,6 @@
             </summary>
             <value>
             The header parser.
-            </value>
-        </member>
-        <member name="P:System.Net.Http.MimeBodyPart.HttpContent">
-            <summary>
-            Gets the content of the HTTP.
-            </summary>
-            <value>
-            The content of the HTTP.
             </value>
         </member>
         <member name="P:System.Net.Http.MimeBodyPart.Segments">
